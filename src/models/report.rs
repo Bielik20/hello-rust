@@ -1,12 +1,11 @@
-use super::assignment::Assignment;
 use super::price::Price;
 use std::iter;
 use std::ops;
 
 #[derive(Debug)]
 pub struct Report {
-  extra_commission: f32,
-  price: Price,
+  pub extra_commission: f32,
+  pub price: Price,
 }
 
 impl Report {
@@ -17,26 +16,16 @@ impl Report {
     };
   }
 
-  pub fn create_from_many(assignments: Vec<Assignment>, commission_rate: f32) -> Report {
-    return assignments
+  pub fn create(items: Vec<&impl MakeReport>, commission_rate: f32) -> Report {
+    return items
       .iter()
-      .map(|assignment| Report::create_from_one(&assignment, commission_rate))
+      .map(|item| item.make_report(commission_rate))
       .sum();
   }
+}
 
-  pub fn create_from_one(assignment: &Assignment, commission_rate: f32) -> Report {
-    let net = assignment.gross_price / (1.0 + assignment.tax);
-    let price = Price {
-      net: net,
-      gross: assignment.gross_price,
-      commission: net * commission_rate,
-    };
-
-    return Report {
-      extra_commission: assignment.extra_commission,
-      price: price,
-    };
-  }
+pub trait MakeReport {
+  fn make_report(&self, commission_rate: f32) -> Report;
 }
 
 impl ops::Add for Report {

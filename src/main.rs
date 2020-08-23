@@ -20,11 +20,9 @@ fn main() {
         tax: 0.8,
         gross_price: 220.0,
     };
-    let report = Report::create_from_one(&assignment1, 0.1);
-    let full_report = Report::create_from_many(vec![assignment1, assignment2], 0.1);
+    let full_report = Report::create(vec![&assignment1, &assignment2], 0.1);
     x.net = 12.0;
     y.net = 13.0;
     println!("{:?}", x + y);
-    println!("{:?}", report);
     println!("{:?}", full_report);
 }
